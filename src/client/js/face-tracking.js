@@ -1,4 +1,4 @@
-const faceapi = window.faceapi;
+import * as faceapi from 'face-api.js';
 const model = faceapi.nets.tinyFaceDetector;
 
 export async function initFaceTracking(videoEl) {
