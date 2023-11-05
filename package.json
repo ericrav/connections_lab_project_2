@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.18.2",
     "face-api.js": "^0.22.2",
+    "tone": "^14.7.77",
     "vite-express": "^0.11.0"
   },
   "devDependencies": {

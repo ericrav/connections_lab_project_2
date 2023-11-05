@@ -1,5 +1,4 @@
-// import * as Tone from 'http://unpkg.com/tone/build/esm/index.js';
-
+import * as Tone from 'tone';
 
 export function playNote() {
   const synth = new Tone.Synth().toDestination();

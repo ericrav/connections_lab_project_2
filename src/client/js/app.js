@@ -5,7 +5,7 @@ window.addEventListener('load', async () => {
   const videoEl = await setupWebcam();
 
   await initFaceTracking(videoEl);
-  // playNote();
+  playNote();
 });
 
 async function setupWebcam() {
