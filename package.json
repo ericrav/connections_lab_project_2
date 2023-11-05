@@ -1,0 +1,17 @@
+{
+  "name": "connections_lab_project_2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "author": "Eric and Kami",
+  "scripts": {
+    "start": "nodemon ./server.js",
+    "start:inspect": "nodemon --inspect ./server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
