@@ -1,3 +1,5 @@
+import { initFaceTracking } from './face-tracking.js';
+
 window.addEventListener('load', async () => {
   const videoEl = await setupWebcam();
 

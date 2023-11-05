@@ -1,7 +1,7 @@
 const faceapi = window.faceapi;
 const model = faceapi.nets.tinyFaceDetector;
 
-async function initFaceTracking(videoEl) {
+export async function initFaceTracking(videoEl) {
   await faceapi.loadFaceLandmarkModel('/models');
   await model.load('/models');
 
