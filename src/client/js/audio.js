@@ -1,4 +1,5 @@
 import * as Tone from 'tone';
+import { state } from './state';
 
 export function playNote() {
   Tone.start();
@@ -10,15 +11,9 @@ export function playNote() {
   synth.triggerAttack(freq);
   synth.volume.value = volume;
 
-  window.addEventListener('mousemove', (e) => {
-    const x = e.clientX / window.innerWidth;
-    const y = e.clientY / window.innerHeight;
-
-    freq = x * 1000;
-    volume = y * -25;
-  });
-
   setInterval(() => {
+    freq = state.position.x * 1500 + 110;
+    volume = (1 - state.position.size) * -25;
     synth.setNote(freq);
     synth.volume.value = volume;
     if (volume <= -18) {
