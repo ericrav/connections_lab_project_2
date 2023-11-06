@@ -40,11 +40,9 @@ async function detectFace(videoEl, canvas) {
     const mouth = resizedResult.landmarks.getMouth();
     const mouthCenter = mouth.reduce((acc, curr) => curr.add(acc)).div(new faceapi.Point(mouth.length, mouth.length));
 
-    const mouthMaxY = mouth.reduce((acc, curr) => curr.y > acc ? curr.y : acc, 0);
-    const mouthMinY = mouth.reduce((acc, curr) => curr.y < acc ? curr.y : acc, Infinity);
-    const openness = (mouthMaxY - mouthMinY) / dims.height / 0.1;
-
-    console.log(openness);
+    const mouthTop = mouth[3];
+    const mouthBottom = mouth[9];
+    const openness = mouthTop.sub(mouthBottom).abs().magnitude() / mouthCenter.magnitude() / 0.1;
 
     state.position.x = mouthCenter.x / dims.width;
     state.position.y = mouthCenter.y / dims.height;
