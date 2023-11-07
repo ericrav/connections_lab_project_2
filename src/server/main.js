@@ -1,3 +1,4 @@
+const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
@@ -18,7 +19,9 @@ const server = USE_HTTPS
       const cert = fs.readFileSync('./cert.pem');
       return https.createServer({ key: key, cert: cert }, app);
     })()
-  : app;
+  : (() => {
+      return http.createServer(app);
+    })();
 
 // set up websocket server for WebRTC signaling
 usePeers(server);
