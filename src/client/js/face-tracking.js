@@ -7,6 +7,8 @@ export async function initFaceTracking(videoEl) {
   await model.load('/models');
 
   const canvas = document.getElementById('canvas');
+  const vid = document.getElementById('webcam');
+  canvas.width = vid.width;
 
   const loop = async () => {
     await detectFace(videoEl, canvas);
@@ -40,15 +42,18 @@ async function detectFace(videoEl, canvas) {
     const mouth = resizedResult.landmarks.getMouth();
     const mouthCenter = mouth.reduce((acc, curr) => curr.add(acc)).div(new faceapi.Point(mouth.length, mouth.length));
 
-    const mouthTop = mouth[3];
-    const mouthBottom = mouth[9];
-    const openness = mouthTop.sub(mouthBottom).abs().magnitude() / mouthCenter.magnitude() / 0.1;
+    const mouthTop = mouth[14];
+    const mouthBottom = mouth[18];
+    const openness = mouthTop.sub(mouthBottom).abs().magnitude();
+    console.log(openness)
 
     state.position.x = mouthCenter.x / dims.width;
     state.position.y = mouthCenter.y / dims.height;
-    state.position.size = openness < 0.25 ? 0 : openness;
+    state.position.size = openness < 5 ? 0 : openness*.15 ;
+
   }
 }
+
 
 function isFaceDetectionModelLoaded() {
   return !!model.params;
