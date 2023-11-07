@@ -1,10 +1,13 @@
 import { playNote } from './audio.js';
 import { initFaceTracking } from './face-tracking.js';
+import { setupSocket } from './webrtc.js';
 
 window.addEventListener('load', async () => {
   const videoEl = await setupWebcam();
 
   await initFaceTracking(videoEl);
+
+  setupSocket();
   playNote();
 });
 

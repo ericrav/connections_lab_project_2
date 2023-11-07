@@ -3,6 +3,8 @@ const fs = require('fs');
 const express = require('express');
 const ViteExpress = require('vite-express');
 
+const { usePeers } = require('./peers');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -17,6 +19,9 @@ const server = USE_HTTPS
       return https.createServer({ key: key, cert: cert }, app);
     })()
   : app;
+
+// set up websocket server for WebRTC signaling
+usePeers(server);
 
 server.listen(port, () => {
   const domain = `${USE_HTTPS ? 'https' : 'http'}://localhost:${port}`;

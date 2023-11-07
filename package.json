@@ -14,6 +14,7 @@
     "face-api.js": "^0.22.2",
     "simple-peer": "^9.11.1",
     "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
     "tone": "^14.7.77",
     "vite-express": "^0.11.0"
   },

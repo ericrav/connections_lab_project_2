@@ -1,5 +1,6 @@
 import * as faceapi from 'face-api.js';
 import { state } from './state';
+import { map } from './utils';
 const model = faceapi.nets.tinyFaceDetector;
 
 export async function initFaceTracking(videoEl) {
@@ -7,8 +8,7 @@ export async function initFaceTracking(videoEl) {
   await model.load('/models');
 
   const canvas = document.getElementById('canvas');
-  const vid = document.getElementById('webcam');
-  canvas.width = vid.width;
+  canvas.width = videoEl.width;
 
   const loop = async () => {
     await detectFace(videoEl, canvas);
@@ -45,12 +45,10 @@ async function detectFace(videoEl, canvas) {
     const mouthTop = mouth[14];
     const mouthBottom = mouth[18];
     const openness = mouthTop.sub(mouthBottom).abs().magnitude();
-    console.log(openness)
 
     state.position.x = mouthCenter.x / dims.width;
     state.position.y = mouthCenter.y / dims.height;
-    state.position.size = openness < 5 ? 0 : openness*.15 ;
-
+    state.position.size = map(openness, 1, 30, 0, 2);
   }
 }
 
