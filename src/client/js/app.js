@@ -7,7 +7,7 @@ window.addEventListener('load', async () => {
 
   await initFaceTracking(videoEl);
 
-  setupSocket();
+  setupSocket(videoEl);
   playNote();
 });
 

@@ -31,4 +31,14 @@ server.listen(port, () => {
   console.log(`Server is listening at ${domain}`);
 });
 
+ViteExpress.config({
+  inlineViteConfig: {
+    resolve: {
+      alias: {
+        'readable-stream': 'vite-compatible-readable-stream',
+      },
+    },
+  },
+});
+
 ViteExpress.bind(app, server);
