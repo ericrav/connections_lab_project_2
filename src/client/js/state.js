@@ -43,6 +43,8 @@ export class Player {
     videoEl.id = this.socketId;
     videoEl.srcObject = mediaStream;
     videoEl.muted = true;
+    videoEl.playsInline = true;
+    videoEl.autoplay = true;
     videoEl.onloadedmetadata = (e) => {
       videoEl.play();
     };

@@ -12,3 +12,7 @@ canvas {
   top: 0;
   bottom: 0;
 }
+
+video {
+  visibility: hidden;
+}
