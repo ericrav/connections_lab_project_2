@@ -5,6 +5,7 @@ import { io } from 'socket.io-client';
 import global from 'global';
 import * as process from 'process';
 import { Player, addPlayer, removePlayer, state } from './state';
+import { rafLoop } from './utils';
 
 // Fix simple-peer for Vite https://github.com/feross/simple-peer/issues/823
 global.process = process;
@@ -73,6 +74,8 @@ export function setupSocketsAndRTC() {
       socket.emit('signal', theirSocketId, socket.id, data);
     });
 
+    let cancelRaf
+
     /*STEP 7.5. When we have a connection, send our stream*/
     peerConnection.on('connect', () => {
       console.log('connect');
@@ -81,6 +84,11 @@ export function setupSocketsAndRTC() {
       //Let's give them our stream - add to the peer connection
       peerConnection.addStream(state.controller.offscreen.captureStream());
       console.log('Send our stream');
+
+      cancelRaf = rafLoop(() => {
+        const { x, y } = state.controller.avatar.position;
+        peerConnection.send(JSON.stringify({ x, y }));
+      });
     });
 
     // Handle video stream
@@ -97,14 +105,9 @@ export function setupSocketsAndRTC() {
       player.avatar.position.y = y;
     });
 
-    const interval = setInterval(() => {
-      const { x, y } = state.controller.avatar.position;
-      peerConnection.send(JSON.stringify({ x, y }));
-    }, 1000 / 60);
-
     peerConnection.on('close', () => {
       console.log('Peer connection is closing');
-      clearInterval(interval);
+      if (cancelRaf) cancelRaf();
       removePlayer(theirSocketId);
     });
 

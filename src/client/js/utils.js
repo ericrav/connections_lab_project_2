@@ -13,3 +13,17 @@ export class Point {
     this.y = y;
   }
 }
+
+export function rafLoop(callback) {
+  let raf
+  function loop() {
+    callback();
+    raf = requestAnimationFrame(loop);
+  }
+  loop();
+
+
+  return () => {
+    cancelAnimationFrame(raf);
+  }
+}
