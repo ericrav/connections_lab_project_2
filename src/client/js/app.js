@@ -21,6 +21,7 @@ function gameLoop() {
   drawFaceJoystick(ctx);
 
   {
+    state.controller.avatar.update();
     const { x, y } = state.controller.avatar.position;
     renderFace(ctx, state.controller.offscreen, x, y);
   }

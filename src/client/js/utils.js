@@ -17,6 +17,10 @@ export class Point {
     return Math.sqrt(this.x * this.x + this.y * this.y);
   }
 
+  scale(scalar) {
+    return new Point(this.x * scalar, this.y * scalar);
+  }
+
   normalized() {
     const length = this.length();
     return new Point(this.x / length, this.y / length);

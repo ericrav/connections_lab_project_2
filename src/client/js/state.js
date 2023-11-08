@@ -4,6 +4,25 @@ import { Point } from './utils';
 
 export class Avatar {
   position = new Point();
+  velocity = new Point();
+
+  update() {
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+
+    console.log(this.velocity.length());
+  }
+
+  addVelocity(acceleration) {
+    const friction = 0.1;
+    this.velocity.x += acceleration.x - this.velocity.x * friction;
+    this.velocity.y += acceleration.y - this.velocity.y * friction;
+
+    const maxSpeed = 9;
+    if (this.velocity.length() > maxSpeed) {
+      this.velocity = this.velocity.normalized().scale(maxSpeed);
+    }
+  }
 }
 
 export class Controller {
@@ -74,11 +93,6 @@ export class Player {
 }
 
 export const state = {
-  position: {
-    x: 0,
-    y: 0,
-    size: 0,
-  },
   controller: new Controller(),
   players: /** @type {Record<String, Player>} */ ({}),
 };

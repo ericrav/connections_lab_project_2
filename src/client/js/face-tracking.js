@@ -116,12 +116,9 @@ async function detectFace(videoEl) {
     const mouthBottom = mouth[18];
     const openness = mouthTop.sub(mouthBottom).abs().magnitude();
 
-    const speed = map(openness, 1, 30, 0, 25);
+    const speed = map(openness, 1, 30, 0, 3);
 
-    state.controller.avatar.position.x += movement.x * speed;
-    state.controller.avatar.position.y += movement.y * speed;
-
-    state.position.size = map(openness, 1, 30, 0, 2);
+    state.controller.avatar.addVelocity(movement.scale(speed));
   }
 }
 
