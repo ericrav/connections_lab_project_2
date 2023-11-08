@@ -30,8 +30,10 @@ function gameLoop() {
   }
 
   Object.values(state.players).forEach((player, i) => {
+    if (!player.videoEl) return;
+
     const { x, y } = player.avatar.position;
-    renderFace(ctx, state.controller.offscreen, x, y);
+    renderFace(ctx, player.videoEl, x, y);
   })
 
   requestAnimationFrame(gameLoop);
