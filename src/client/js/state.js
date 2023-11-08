@@ -58,7 +58,6 @@ export class Player {
     videoEl.onloadedmetadata = (e) => {
       videoEl.play();
     };
-    //attach to html
     document.body.appendChild(videoEl);
     this.videoEl = videoEl;
   }

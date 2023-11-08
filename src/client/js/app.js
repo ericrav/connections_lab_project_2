@@ -10,12 +10,6 @@ window.addEventListener('load', async () => {
   gameLoop();
 });
 
-window.addEventListener('mousemove', (e) => {
-  const { x, y } = e;
-  state.controller.avatar.position.x = x;
-  state.controller.avatar.position.y = y;
-});
-
 function gameLoop() {
   const canvas = /** @type {HTMLCanvasElement} */ (
     document.getElementById('canvas')
@@ -23,6 +17,8 @@ function gameLoop() {
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+
+  drawFaceJoystick(ctx);
 
   {
     const { x, y } = state.controller.avatar.position;
@@ -53,5 +49,24 @@ function renderFace(ctx, imageSource, posX, posY) {
   ctx.arc(posX, posY, r, 0, 2 * Math.PI);
   ctx.clip();
   ctx.drawImage(imageSource, posX - r, posY - r, size, size);
+  ctx.restore();
+}
+
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ */
+function drawFaceJoystick(ctx) {
+  const webcam = /** @type {HTMLVideoElement} */(document.getElementById('webcam'));
+
+  const stream = webcam.srcObject;
+  if (!stream) return;
+  const aspectRatio = stream.getTracks()[0].getSettings().aspectRatio;
+  const webcamScale = 480;
+  const { width } = ctx.canvas;
+
+  ctx.save();
+  ctx.globalAlpha = 0.25;
+  ctx.scale(-1, 1);
+  ctx.drawImage(webcam, 0, 600, -webcamScale, webcamScale / aspectRatio);
   ctx.restore();
 }

@@ -12,6 +12,15 @@ export class Point {
     this.x = x;
     this.y = y;
   }
+
+  length() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+
+  normalized() {
+    const length = this.length();
+    return new Point(this.x / length, this.y / length);
+  }
 }
 
 export function rafLoop(callback) {

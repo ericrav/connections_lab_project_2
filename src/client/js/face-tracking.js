@@ -1,6 +1,8 @@
+// @ts-check
+
 import * as faceapi from 'face-api.js';
 import { state } from './state';
-import { map } from './utils';
+import { Point, map } from './utils';
 const model = faceapi.nets.tinyFaceDetector;
 
 export async function initFaceTracking() {
@@ -11,7 +13,7 @@ export async function initFaceTracking() {
   const canvas = document.getElementById('canvas');
 
   const loop = async () => {
-    await detectFace(videoEl, canvas);
+    await detectFace(videoEl);
     renderFaceInBoundingBox(videoEl);
     requestAnimationFrame(loop);
   };
@@ -23,12 +25,28 @@ function renderFaceInBoundingBox(videoEl) {
   const ctx = offscreen.getContext('2d');
 
   const { x, y, width, height } = state.controller.boundingBox;
-  ctx.drawImage(videoEl, x, y, width, height, 0, 0, 256, 256 * (height / width));
+
+  ctx.save();
+  ctx.scale(-1, 1);
+  ctx.drawImage(
+    videoEl,
+    x,
+    y,
+    width,
+    height,
+    0,
+    0,
+    -256,
+    256 * (height / width)
+  );
+
+  ctx.restore();
 }
 
-
 async function setupWebcam() {
-  const videoEl = document.getElementById('webcam');
+  const videoEl = /** @type {HTMLVideoElement} */ (
+    document.getElementById('webcam')
+  );
 
   const stream = await navigator.mediaDevices
     .getUserMedia({ video: true, audio: false })
@@ -36,6 +54,8 @@ async function setupWebcam() {
       console.error(err);
       alert('To play, please enable camera access in your browser settings');
     });
+
+  if (!stream) return;
   videoEl.srcObject = stream;
 
   return videoEl;
@@ -47,7 +67,10 @@ function getFaceDetectorOptions() {
   return new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold });
 }
 
-async function detectFace(videoEl, canvas) {
+/**
+ * @param {HTMLVideoElement} videoEl
+ */
+async function detectFace(videoEl) {
   if (videoEl.paused || videoEl.ended || !isFaceDetectionModelLoaded()) {
     return;
   }
@@ -59,30 +82,48 @@ async function detectFace(videoEl, canvas) {
     .withFaceLandmarks();
 
   if (result) {
-    // const dims = faceapi.matchDimensions(canvas, videoEl, true);
-    const resizedResult = result //faceapi.resizeResults(result, dims);
-    faceapi.draw.drawFaceLandmarks(canvas, resizedResult);
-    state.controller.updateBoundingBox(resizedResult.detection.box);
+    state.controller.updateBoundingBox(result.detection.box);
 
-    const facePath = resizedResult.landmarks.getJawOutline();
+    const facePath = result.landmarks.getJawOutline();
     // state.controller.facePath = facePath.map((p) => ({
     //   x: p.x / dims.width,
     //   y: p.y / dims.height,
     // }));
 
-    const mouth = resizedResult.landmarks.getMouth();
-    const mouthCenter = mouth.reduce((acc, curr) => curr.add(acc)).div(new faceapi.Point(mouth.length, mouth.length));
+    const mouth = result.landmarks.getMouth();
+    const nose = result.landmarks.getNose();
+    const noseCenter = nose
+      .reduce((acc, curr) => curr.add(acc))
+      .div(new faceapi.Point(mouth.length, mouth.length));
+    const videoMidPoint = new faceapi.Point(
+      result.landmarks.imageWidth,
+      result.landmarks.imageHeight
+    );
+
+    const aspect = result.landmarks.imageWidth / result.landmarks.imageHeight;
+    const joystickVector = noseCenter.sub(videoMidPoint).mul(new faceapi.Point(-1, aspect*2));
+
+
+    const minimumMagnitude = result.landmarks.imageWidth / 4;
+
+    const movement =
+      joystickVector.magnitude() > minimumMagnitude
+        ? new Point(joystickVector.x, joystickVector.y).normalized()
+        : new Point(0);
+
 
     const mouthTop = mouth[14];
     const mouthBottom = mouth[18];
     const openness = mouthTop.sub(mouthBottom).abs().magnitude();
 
-    // state.position.x = mouthCenter.x / dims.width;
-    // state.position.y = mouthCenter.y / dims.height;
+    const speed = map(openness, 1, 30, 0, 25);
+
+    state.controller.avatar.position.x += movement.x * speed;
+    state.controller.avatar.position.y += movement.y * speed;
+
     state.position.size = map(openness, 1, 30, 0, 2);
   }
 }
-
 
 function isFaceDetectionModelLoaded() {
   return !!model.params;
