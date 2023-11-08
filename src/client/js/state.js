@@ -1,5 +1,11 @@
 // @ts-check
 
+import { Point } from './utils';
+
+export class Avatar {
+  position = new Point();
+}
+
 export class Controller {
   boundingBox = {
     x: 0,
@@ -9,6 +15,8 @@ export class Controller {
   };
 
   facePath = [];
+
+  avatar = new Avatar();
 
   updateBoundingBox(boundingBox) {
     const factor = 0.4;
@@ -71,7 +79,7 @@ export const state = {
     size: 0,
   },
   controller: new Controller(),
-  players: /** @type {Record<String, Player>} */({}),
+  players: /** @type {Record<String, Player>} */ ({}),
 };
 
 export function addPlayer(id, player) {
