@@ -3,14 +3,31 @@
 import { Point } from './utils';
 
 export class Avatar {
-  position = new Point();
+  position = new Point(400);
   velocity = new Point();
 
   update() {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
-    console.log(this.velocity.length());
+    if (this.position.x < 0) {
+      this.position.x = 0;
+      this.velocity.x *= -1;
+    }
+    const MAX_X = 800;
+    if (this.position.x > MAX_X) {
+      this.position.x = MAX_X;
+      this.velocity.x *= -1;
+    }
+    if (this.position.y < 0) {
+      this.position.y = 0;
+      this.velocity.y *= -1;
+    }
+    const MAX_Y = 800;
+    if (this.position.y > MAX_Y) {
+      this.position.y = MAX_Y;
+      this.velocity.y *= -1;
+    }
   }
 
   addVelocity(acceleration) {
