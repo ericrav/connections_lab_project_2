@@ -83,15 +83,28 @@ export function setupSocketsAndRTC() {
       console.log('Send our stream');
     });
 
-    /*STEP 7.6. Stream is coming to us*/
+    // Handle video stream
     peerConnection.on('stream', (stream) => {
       console.log('Incoming Stream');
       player.addMediaStream(stream);
     });
 
-    /*STEP 7.6. When peer connection closes*/
+    // Handle data events
+    peerConnection.on('data', (data) => {
+      // console.log(theirSocketId, 'data: ' + data);
+      const { x, y } = JSON.parse(data);
+      player.avatar.position.x = x;
+      player.avatar.position.y = y;
+    });
+
+    const interval = setInterval(() => {
+      const { x, y } = state.controller.avatar.position;
+      peerConnection.send(JSON.stringify({ x, y }));
+    }, 1000 / 60);
+
     peerConnection.on('close', () => {
       console.log('Peer connection is closing');
+      clearInterval(interval);
       removePlayer(theirSocketId);
     });
 

@@ -30,9 +30,8 @@ function gameLoop() {
   }
 
   Object.values(state.players).forEach((player, i) => {
-    // const { x, y, size } = player.position;
-    console.log(player)
-    renderFace(ctx, state.controller.offscreen, (i + 1) * size, size);
+    const { x, y } = player.avatar.position;
+    renderFace(ctx, state.controller.offscreen, x, y);
   })
 
   requestAnimationFrame(gameLoop);

@@ -37,6 +37,8 @@ export class Controller {
 }
 
 export class Player {
+  avatar = new Avatar();
+
   /**
    * @param {string} socketId
    * @param {import("simple-peer").Instance} simplePeer
