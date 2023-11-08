@@ -38,7 +38,13 @@ async function detectFace(videoEl, canvas) {
     const dims = faceapi.matchDimensions(canvas, videoEl, true);
     const resizedResult = faceapi.resizeResults(result, dims);
     faceapi.draw.drawFaceLandmarks(canvas, resizedResult);
-    state.box = resizedResult.detection.box;
+    state.controller.updateBoundingBox(resizedResult.detection.box);
+
+    const facePath = resizedResult.landmarks.getJawOutline();
+    state.controller.facePath = facePath.map((p) => ({
+      x: p.x / dims.width,
+      y: p.y / dims.height,
+    }));
 
     const mouth = resizedResult.landmarks.getMouth();
     const mouthCenter = mouth.reduce((acc, curr) => curr.add(acc)).div(new faceapi.Point(mouth.length, mouth.length));

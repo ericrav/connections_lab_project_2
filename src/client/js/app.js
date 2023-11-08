@@ -1,16 +1,16 @@
 import { playNote } from './audio.js';
 import { initFaceTracking } from './face-tracking.js';
 import { state } from './state.js';
-import { setupSocket } from './webrtc.js';
+import { setupSocketsAndRTC } from './webrtc.js';
 
 window.addEventListener('load', async () => {
   const videoEl = await setupWebcam();
 
   await initFaceTracking(videoEl);
 
-  setupSocket(videoEl);
+  setupSocketsAndRTC();
   renderFace(videoEl);
-  playNote();
+  // playNote();
 });
 
 async function setupWebcam() {
@@ -28,19 +28,33 @@ async function setupWebcam() {
 }
 
 function renderFace(videoEl) {
-  const offscreen = new OffscreenCanvas(256, 256);
+  const offscreen = state.controller.offscreen;
   const ctx = offscreen.getContext('2d');
 
   const canvas = document.getElementById('canvas');
   const ctx2 = canvas.getContext('2d');
 
   const loop = () => {
-    console.log(state.box)
-    requestAnimationFrame(loop);
-    if (!state.box) return
-    const { left, width, top, height } = state.box;
-    ctx.drawImage(videoEl, left, top, width, height, 0, 0, 256, 256);
+    const { x, y, width, height } = state.controller.boundingBox;
+    ctx.drawImage(videoEl, x, y, width, height, 0, 0, 256, 256 * (height / width));
+
+    // ctx.save();
+    // ctx.translate(128, 128);
+    // ctx.scale(256/width*2, 256/height*2);
+    // ctx.translate(-128, -128);
+    // ctx.beginPath();
+    // ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+    // state.controller.facePath.forEach((p) => {
+    //   ctx.lineTo(p.x * 256, p.y * 256);
+    // });
+    // ctx.closePath();
+    // ctx.fill();
+    // ctx.restore();
+
     ctx2.drawImage(offscreen, canvas.width / 2, canvas.height / 2, 256, 256);
-  }
+
+
+    requestAnimationFrame(loop);
+  };
   requestAnimationFrame(loop);
 }

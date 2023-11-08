@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 
 import global from 'global';
 import * as process from 'process';
+import { state } from './state';
 
 // Fix simple-peer for Vite https://github.com/feross/simple-peer/issues/823
 global.process = process;
@@ -12,7 +13,7 @@ let socket;
 const peers = {};
 
 /*Step 6. Establish socket connection*/
-export function setupSocket(videoEl) {
+export function setupSocketsAndRTC() {
   /*STEP 6.1. Set to global object variable*/
   socket = io();
 
@@ -80,7 +81,7 @@ export function setupSocket(videoEl) {
       console.log(peerConnection);
 
       //Let's give them our stream - add to the peer connection
-      peerConnection.addStream(videoEl.srcObject);
+      peerConnection.addStream(state.controller.offscreen.captureStream());
       console.log('Send our stream');
     });
 
