@@ -1,3 +1,5 @@
+// @ts-check
+
 export class Controller {
   boundingBox = {
     x: 0,
@@ -26,6 +28,40 @@ export class Controller {
   })();
 }
 
+export class Player {
+  /**
+   * @param {string} socketId
+   * @param {import("simple-peer").Instance} simplePeer
+   */
+  constructor(socketId, simplePeer) {
+    this.socketId = socketId;
+    this.simplePeer = simplePeer;
+  }
+
+  addMediaStream(mediaStream) {
+    const videoEl = document.createElement('video');
+    videoEl.id = this.socketId;
+    videoEl.srcObject = mediaStream;
+    videoEl.muted = true;
+    videoEl.onloadedmetadata = (e) => {
+      videoEl.play();
+    };
+    //attach to html
+    document.body.appendChild(videoEl);
+    this.videoEl = videoEl;
+  }
+
+  dispose() {
+    if (this.simplePeer) {
+      this.simplePeer.destroy();
+    }
+
+    if (this.videoEl) {
+      this.videoEl.remove();
+    }
+  }
+}
+
 export const state = {
   position: {
     x: 0,
@@ -33,4 +69,14 @@ export const state = {
     size: 0,
   },
   controller: new Controller(),
+  players: /** @type {Record<String, Player>} */({}),
 };
+
+export function addPlayer(id, player) {
+  state.players[id] = player;
+}
+
+export function removePlayer(id) {
+  state.players[id].dispose();
+  delete state.players[id];
+}

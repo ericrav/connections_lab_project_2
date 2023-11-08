@@ -1,4 +1,3 @@
-import { playNote } from './audio.js';
 import { initFaceTracking } from './face-tracking.js';
 import { state } from './state.js';
 import { setupSocketsAndRTC } from './webrtc.js';

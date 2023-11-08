@@ -4,13 +4,12 @@ import { io } from 'socket.io-client';
 
 import global from 'global';
 import * as process from 'process';
-import { state } from './state';
+import { Player, addPlayer, removePlayer, state } from './state';
 
 // Fix simple-peer for Vite https://github.com/feross/simple-peer/issues/823
 global.process = process;
 
 let socket;
-const peers = {};
 
 /*Step 6. Establish socket connection*/
 export function setupSocketsAndRTC() {
@@ -31,8 +30,7 @@ export function setupSocketsAndRTC() {
       // Make sure the id is not my own id
       if (otherId !== socket.id) {
         //call all peer connections (since we are have just joined, we will be the initiator to connect with everyone else on the call)
-        let peerConnection = setupConnection(true, otherId);
-        peers[otherId] = peerConnection;
+        setupConnection(true, otherId);
       }
     });
   });
@@ -46,18 +44,16 @@ export function setupSocketsAndRTC() {
     }
 
     //look for the right simplepeer in our array
-    let connection = peers[from];
+    const player = state.players[from];
     //if peer exists in the peers object, send signal to it
-    if (connection) {
+    if (player) {
+      const connection = player.simplePeer;
       connection.signal(data);
       //otherwise setup connection to that particular peer
     } else {
-      console.log('Never found right simplepeer object');
       //create a new object, it won't be the initiator, another peer will call us
-      let theirSocketId = from;
-      let peerConnection = setupConnection(false, theirSocketId);
-      //add new connection to a global 'peers' object
-      peers[from] = peerConnection;
+      const theirSocketId = from;
+      const peerConnection = setupConnection(false, theirSocketId);
       //attempt to establish a connection with the new peer that sent the initial signal
       console.log('Connecting to a new peer!');
       peerConnection.signal(data);
@@ -68,6 +64,8 @@ export function setupSocketsAndRTC() {
   function setupConnection(initiator, theirSocketId) {
     /*STEP 7.1. Create a new peer connection object */
     const peerConnection = new SimplePeer({ initiator });
+    const player = new Player(theirSocketId, peerConnection);
+    addPlayer(theirSocketId, player);
 
     /*STEP 7.2. Simplepeer generates signals which need to be sent across socket connection*/
     peerConnection.on('signal', (data) => {
@@ -88,23 +86,13 @@ export function setupSocketsAndRTC() {
     /*STEP 7.6. Stream is coming to us*/
     peerConnection.on('stream', (stream) => {
       console.log('Incoming Stream');
-
-      //create a new video object
-      let theirVideoEl = document.createElement('video');
-      theirVideoEl.id = theirSocketId;
-      theirVideoEl.srcObject = stream;
-      theirVideoEl.muted = true;
-      theirVideoEl.onloadedmetadata = (e) => {
-        theirVideoEl.play();
-      };
-      //attach to html
-      document.body.appendChild(theirVideoEl);
+      player.addMediaStream(stream);
     });
 
     /*STEP 7.6. When peer connection closes*/
     peerConnection.on('close', () => {
       console.log('Peer connection is closing');
-      //Additionally can remove from the myFriends object
+      removePlayer(theirSocketId);
     });
 
     //on error
