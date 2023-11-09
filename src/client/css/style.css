@@ -3,6 +3,8 @@ html, body {
   padding: 0;
   background: black;
   position: absolute;
+  width: 100%;
+  font-family: 'Quicksand', sans-serif;
 }
 
 canvas {
@@ -55,4 +57,48 @@ video {
   width: auto;
   top: 280px;
   left: 216px;
+}
+
+#kami{
+  position: absolute;
+  left: 200px;
+  width: 220px;
+  top: 40vh;
+}
+#eric{
+  position: absolute;
+  right: 200px;
+  width: 200px;
+  top: 40vh;
+}
+
+#overlay{
+  width: 100vw;
+  height: 100vh;
+  background: pink;
+  position: absolute;
+  top:0;
+  z-index: 102;
+}
+
+#start_btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 100px;
+  background: #fff;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 100px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 72px;
+  color: darkred;
+  text-align: center;
+  margin-top: 130px;
 }

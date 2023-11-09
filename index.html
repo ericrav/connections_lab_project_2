@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Quicksand:wght@700&display=swap" rel="stylesheet">
   <title>Project 2</title>
   <link rel="stylesheet" href="/src/client/css/style.css">
   <script>
@@ -12,7 +15,12 @@
 <body>
   <video id="webcam" autoplay muted></video>
   <canvas id="canvas"></canvas>
-
+  <div id="overlay">
+    <h1>Joyface</h1>
+    <img id="eric" src="/img/eric.svg"/>
+    <img id="kami" src="/img/kami.svg"/>
+    <button id="start_btn">Start</button>
+  </div>
   <div class="controls">
     <img id="left" src="/img/left.png">
     <img id="right" src="/img/right.png">

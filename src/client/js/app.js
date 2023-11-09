@@ -10,6 +10,10 @@ window.addEventListener('load', async () => {
   gameLoop();
 });
 
+document.getElementById('start_btn').addEventListener('click', () => {
+  document.getElementById('overlay').remove();
+});
+
 function gameLoop() {
   const canvas = /** @type {HTMLCanvasElement} */ (
     document.getElementById('canvas')
