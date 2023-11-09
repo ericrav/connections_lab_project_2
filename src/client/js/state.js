@@ -50,6 +50,8 @@ export class Controller {
     height: 0,
   };
 
+  nosePoint = new Point();
+
   facePath = [];
 
   avatar = new Avatar();

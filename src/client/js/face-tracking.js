@@ -77,11 +77,13 @@ async function detectFace(videoEl) {
 
   const options = getFaceDetectorOptions();
 
-  const result = await faceapi
+  let result = await faceapi
     .detectSingleFace(videoEl, options)
     .withFaceLandmarks();
 
   if (result) {
+    // const dims = faceapi.matchDimensions(state.controller.offscreen, videoEl);
+    // result = faceapi.resizeResults(result, {});
     state.controller.updateBoundingBox(result.detection.box);
 
     const facePath = result.landmarks.getJawOutline();
@@ -95,6 +97,9 @@ async function detectFace(videoEl) {
     const noseCenter = nose
       .reduce((acc, curr) => curr.add(acc))
       .div(new faceapi.Point(mouth.length, mouth.length));
+
+    state.controller.nosePoint = new Point(1 - (noseCenter.x / 280), noseCenter.y / 200);
+
     const videoMidPoint = new faceapi.Point(
       result.landmarks.imageWidth,
       result.landmarks.imageHeight

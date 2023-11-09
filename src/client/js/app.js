@@ -65,9 +65,17 @@ function drawFaceJoystick(ctx) {
   const webcamScale = 480;
   const { width } = ctx.canvas;
 
+  {
+    const { x, y } = state.controller.nosePoint;
+    ctx.fillStyle = 'red';
+    ctx.beginPath();
+    ctx.arc(x * webcamScale, y * webcamScale / aspectRatio, 10, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
   ctx.save();
   ctx.globalAlpha = 0.25;
   ctx.scale(-1, 1);
-  ctx.drawImage(webcam, 0, 600, -webcamScale, webcamScale / aspectRatio);
+  ctx.drawImage(webcam, 0, 0, -webcamScale, webcamScale / aspectRatio);
   ctx.restore();
 }
