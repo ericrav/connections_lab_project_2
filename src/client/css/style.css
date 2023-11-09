@@ -16,3 +16,43 @@ canvas {
 video {
   visibility: hidden;
 }
+
+.controls {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 480px;
+  height: 360px;
+}
+
+.controls img {
+  position: absolute;
+}
+
+#left {
+  width: 48px;
+  height: auto;
+  top: 180px;
+  left: 120px;
+}
+
+#right {
+  width: 48px;
+  height: auto;
+  top: 180px;
+  left: 312px;
+}
+
+#up {
+  height: 48px;
+  width: auto;
+  top: 80px;
+  left: 216px;
+}
+
+#down {
+  height: 48px;
+  width: auto;
+  top: 280px;
+  left: 216px;
+}

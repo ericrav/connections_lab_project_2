@@ -62,6 +62,7 @@ function drawFaceJoystick(ctx) {
   const stream = webcam.srcObject;
   if (!stream) return;
   const aspectRatio = stream.getTracks()[0].getSettings().aspectRatio;
+  console.log(aspectRatio)
   const webcamScale = 480;
   const { width } = ctx.canvas;
 

@@ -116,12 +116,21 @@ async function detectFace(videoEl) {
         ? new Point(joystickVector.x, joystickVector.y).normalized()
         : new Point(0);
 
-
     const mouthTop = mouth[14];
     const mouthBottom = mouth[18];
     const openness = mouthTop.sub(mouthBottom).abs().magnitude();
+    const speed = map(openness, 1, 30, 0, 3) + (joystickVector.magnitude() > minimumMagnitude ? 0.5 : 0);
 
-    const speed = map(openness, 1, 30, 0, 3);
+    const left = document.getElementById('left');
+    left.style.transform = `scale(${movement.x < 0 ? speed + -movement.x : 0.5})`;
+    const right = document.getElementById('right');
+    right.style.transform = `scale(${movement.x > 0 ? speed + movement.x : 0.5})`;
+    const up = document.getElementById('up');
+    up.style.transform = `scale(${movement.y < 0 ? speed + -movement.y : 0.5})`;
+    const down = document.getElementById('down');
+    down.style.transform = `scale(${movement.y > 0 ? speed + movement.y : 0.5})`;
+
+
 
     state.controller.avatar.addVelocity(movement.scale(speed));
   }

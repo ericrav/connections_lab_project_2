@@ -2,8 +2,11 @@
 
 import { Point } from './utils';
 
+const MAX_X = 1200;
+const MAX_Y = 900;
+
 export class Avatar {
-  position = new Point(400);
+  position = new Point(MAX_X / 2, MAX_Y / 2);
   velocity = new Point();
 
   update() {
@@ -14,7 +17,6 @@ export class Avatar {
       this.position.x = 0;
       this.velocity.x *= -1;
     }
-    const MAX_X = 800;
     if (this.position.x > MAX_X) {
       this.position.x = MAX_X;
       this.velocity.x *= -1;
@@ -23,7 +25,6 @@ export class Avatar {
       this.position.y = 0;
       this.velocity.y *= -1;
     }
-    const MAX_Y = 800;
     if (this.position.y > MAX_Y) {
       this.position.y = MAX_Y;
       this.velocity.y *= -1;
