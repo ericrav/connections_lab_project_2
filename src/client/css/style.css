@@ -1,18 +1,16 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: black;
+  background: gray;
   position: absolute;
   width: 100%;
   font-family: 'Quicksand', sans-serif;
 }
 
 canvas {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  width: 1200px;
+  height: 800px;
+  background: black;
 }
 
 video {
@@ -21,8 +19,9 @@ video {
 
 .controls {
   position: absolute;
-  left: 0;
-  top: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 480px;
   height: 360px;
 }
@@ -73,6 +72,7 @@ video {
 }
 
 #overlay{
+  display: none;
   width: 100vw;
   height: 100vh;
   background: pink;
@@ -101,4 +101,19 @@ h1 {
   color: darkred;
   text-align: center;
   margin-top: 130px;
+}
+
+.game {
+  position: relative;
+}
+
+.game-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -2,8 +2,10 @@
 
 import { Point } from './utils';
 
-const MAX_X = 1200;
-const MAX_Y = 900;
+export const MAX_X = 1200;
+export const MAX_Y = 800;
+
+const PLAYER_SIZE = 128;
 
 export class Avatar {
   position = new Point(MAX_X / 2, MAX_Y / 2);
@@ -13,20 +15,22 @@ export class Avatar {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
-    if (this.position.x < 0) {
-      this.position.x = 0;
+    const offset = PLAYER_SIZE / 2;
+
+    if (this.position.x < offset) {
+      this.position.x = offset;
       this.velocity.x *= -1;
     }
-    if (this.position.x > MAX_X) {
-      this.position.x = MAX_X;
+    if (this.position.x > MAX_X - offset) {
+      this.position.x = MAX_X - offset;
       this.velocity.x *= -1;
     }
-    if (this.position.y < 0) {
-      this.position.y = 0;
+    if (this.position.y < offset) {
+      this.position.y = offset;
       this.velocity.y *= -1;
     }
-    if (this.position.y > MAX_Y) {
-      this.position.y = MAX_Y;
+    if (this.position.y > MAX_Y - offset) {
+      this.position.y = MAX_Y - offset;
       this.velocity.y *= -1;
     }
   }

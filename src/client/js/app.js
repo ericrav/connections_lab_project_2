@@ -21,8 +21,8 @@ function gameLoop() {
     document.getElementById('canvas')
   );
   const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = 1200;//window.innerWidth;
+  canvas.height = 800;//window.innerHeight;
 
   drawFaceJoystick(ctx);
 
@@ -68,19 +68,22 @@ function drawFaceJoystick(ctx) {
   const stream = /** @type {MediaStream} */ (webcam.srcObject);
   if (!stream) return;
   const aspectRatio = stream.getTracks()[0].getSettings().aspectRatio;
-  const webcamScale = 480;
+  const width = 480;
+  const height = width / aspectRatio;
 
 
   ctx.save();
-  ctx.scale(-1, 1);
-  ctx.translate(-webcamScale, 0);
+  ctx.translate(ctx.canvas.width / 2 - width / 2, ctx.canvas.height / 2 - height / 2);
 
-  if (state.result) {
-    ctx.save();
-    ctx.globalAlpha = state.result.detection.score * 0.75;
-    faceapi.draw.drawFaceLandmarks(ctx.canvas, state.result);
-    ctx.restore();
-  }
+  ctx.scale(-1, 1);
+  ctx.translate(-width, 0);
+
+  // if (state.result) {
+  //   ctx.save();
+  //   ctx.globalAlpha = state.result.detection.score * 0.75;
+  //   faceapi.draw.drawFaceLandmarks(ctx.canvas, state.result);
+  //   ctx.restore();
+  // }
 
   {
     ctx.globalAlpha = 1;
@@ -93,6 +96,6 @@ function drawFaceJoystick(ctx) {
 
 
   ctx.globalAlpha = 0.25;
-  ctx.drawImage(webcam, 0, 0, webcamScale, webcamScale / aspectRatio);
+  ctx.drawImage(webcam, 0, 0, width, height);
   ctx.restore();
 }

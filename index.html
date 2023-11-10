@@ -14,18 +14,23 @@
 </head>
 <body>
   <video id="webcam" autoplay muted></video>
-  <canvas id="canvas"></canvas>
   <div id="overlay">
     <h1>Joyface</h1>
     <img id="eric" src="/img/eric.svg"/>
     <img id="kami" src="/img/kami.svg"/>
     <button id="start_btn">Start</button>
   </div>
-  <div class="controls">
-    <img id="left" src="/img/left.png">
-    <img id="right" src="/img/right.png">
-    <img id="up" src="/img/up.png">
-    <img id="down" src="/img/down.png">
+
+  <div class="game-container">
+    <div class="game">
+      <canvas id="canvas"></canvas>
+      <div class="controls">
+        <img id="left" src="/img/left.png">
+        <img id="right" src="/img/right.png">
+        <img id="up" src="/img/up.png">
+        <img id="down" src="/img/down.png">
+      </div>
+    </div>
   </div>
 
   <script type="module" src="/src/client/js/app.js"></script>

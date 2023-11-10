@@ -111,7 +111,7 @@ async function detectFace(videoEl) {
     const aspect = result.landmarks.imageWidth / result.landmarks.imageHeight;
     const joystickVector = noseCenter.sub(videoMidPoint).mul(new faceapi.Point(-1, aspect*2));
 
-    const minimumMagnitude = result.landmarks.imageWidth / 4;
+    const minimumMagnitude = 480 / 8;
 
     const movement =
       joystickVector.magnitude() > minimumMagnitude
@@ -122,7 +122,7 @@ async function detectFace(videoEl) {
     const mouthBottom = mouth[18];
     const openness = mouthTop.sub(mouthBottom).abs().magnitude();
     const speed =
-      (map(openness, 1, 30, 0, 3) + (joystickVector.magnitude() > minimumMagnitude ? 0.5 : 0)) * result.detection.score;
+      (map(openness, 1, 30, 0, 1.5) + (joystickVector.magnitude() > minimumMagnitude ? 0.25 : 0)) * result.detection.score;
 
     const left = document.getElementById('left');
     left.style.transform = `scale(${movement.x < 0 ? speed + -movement.x : 0.5})`;
