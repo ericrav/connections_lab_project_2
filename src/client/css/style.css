@@ -67,12 +67,11 @@ video {
 #eric{
   position: absolute;
   right: 200px;
-  width: 200px;
+  width: 180px;
   top: 40vh;
 }
 
 #overlay{
-  display: none;
   width: 100vw;
   height: 100vh;
   background: pink;
@@ -88,11 +87,15 @@ video {
   transform: translate(-50%, -50%);
   width: 200px;
   height: 100px;
-  background: #fff;
-  border-radius: 10px;
+  background: rgba(255,255,255,0.9);
+  color: darkred;
+  border: 2px solid rgba(0,0,0,0.8);
+  border-radius: 12px;
+  box-sizing: border-box;
   text-align: center;
   line-height: 100px;
-  font-size: 30px;
+  font-size: 48px;
+  letter-spacing: 0.035em;
   cursor: pointer;
 }
 
