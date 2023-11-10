@@ -82,11 +82,17 @@ async function detectFace(videoEl) {
     .withFaceLandmarks();
 
   if (result) {
-    // const dims = faceapi.matchDimensions(state.controller.offscreen, videoEl);
-    // result = faceapi.resizeResults(result, {});
+    // before resizing
     state.controller.updateBoundingBox(result.detection.box);
 
-    const facePath = result.landmarks.getJawOutline();
+    result = faceapi.resizeResults(result, {
+      width: 480,
+      height: 480 / videoEl.videoWidth * videoEl.videoHeight,
+    });
+
+    state.result = result;
+
+    // const facePath = result.landmarks.getJawOutline();
     // state.controller.facePath = facePath.map((p) => ({
     //   x: p.x / dims.width,
     //   y: p.y / dims.height,
@@ -94,20 +100,16 @@ async function detectFace(videoEl) {
 
     const mouth = result.landmarks.getMouth();
     const nose = result.landmarks.getNose();
-    const noseCenter = nose
-      .reduce((acc, curr) => curr.add(acc))
-      .div(new faceapi.Point(mouth.length, mouth.length));
-
-    state.controller.nosePoint = new Point(1 - (noseCenter.x / 280), noseCenter.y / 200);
+    const noseCenter = nose[3];
+    state.controller.nosePoint = new Point(noseCenter.x, noseCenter.y);
 
     const videoMidPoint = new faceapi.Point(
-      result.landmarks.imageWidth,
-      result.landmarks.imageHeight
+      480/2,
+      480 / videoEl.videoWidth * videoEl.videoHeight / 2,
     );
 
     const aspect = result.landmarks.imageWidth / result.landmarks.imageHeight;
     const joystickVector = noseCenter.sub(videoMidPoint).mul(new faceapi.Point(-1, aspect*2));
-
 
     const minimumMagnitude = result.landmarks.imageWidth / 4;
 
@@ -119,7 +121,8 @@ async function detectFace(videoEl) {
     const mouthTop = mouth[14];
     const mouthBottom = mouth[18];
     const openness = mouthTop.sub(mouthBottom).abs().magnitude();
-    const speed = map(openness, 1, 30, 0, 3) + (joystickVector.magnitude() > minimumMagnitude ? 0.5 : 0);
+    const speed =
+      (map(openness, 1, 30, 0, 3) + (joystickVector.magnitude() > minimumMagnitude ? 0.5 : 0)) * result.detection.score;
 
     const left = document.getElementById('left');
     left.style.transform = `scale(${movement.x < 0 ? speed + -movement.x : 0.5})`;
@@ -129,8 +132,6 @@ async function detectFace(videoEl) {
     up.style.transform = `scale(${movement.y < 0 ? speed + -movement.y : 0.5})`;
     const down = document.getElementById('down');
     down.style.transform = `scale(${movement.y > 0 ? speed + movement.y : 0.5})`;
-
-
 
     state.controller.avatar.addVelocity(movement.scale(speed));
   }

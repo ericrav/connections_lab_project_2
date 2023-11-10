@@ -1,3 +1,5 @@
+// @ts-check
+import * as faceapi from 'face-api.js';
 import { initFaceTracking } from './face-tracking.js';
 import { state } from './state.js';
 import { setupSocketsAndRTC } from './webrtc.js';
@@ -63,24 +65,34 @@ function renderFace(ctx, imageSource, posX, posY) {
 function drawFaceJoystick(ctx) {
   const webcam = /** @type {HTMLVideoElement} */(document.getElementById('webcam'));
 
-  const stream = webcam.srcObject;
+  const stream = /** @type {MediaStream} */ (webcam.srcObject);
   if (!stream) return;
   const aspectRatio = stream.getTracks()[0].getSettings().aspectRatio;
-  console.log(aspectRatio)
   const webcamScale = 480;
-  const { width } = ctx.canvas;
+
+
+  ctx.save();
+  ctx.scale(-1, 1);
+  ctx.translate(-webcamScale, 0);
+
+  if (state.result) {
+    ctx.save();
+    ctx.globalAlpha = state.result.detection.score * 0.75;
+    faceapi.draw.drawFaceLandmarks(ctx.canvas, state.result);
+    ctx.restore();
+  }
 
   {
+    ctx.globalAlpha = 1;
     const { x, y } = state.controller.nosePoint;
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = '#30bbf4';
     ctx.beginPath();
-    ctx.arc(x * webcamScale, y * webcamScale / aspectRatio, 10, 0, 2 * Math.PI);
+    ctx.arc(x, y, 10, 0, 2 * Math.PI);
     ctx.fill();
   }
 
-  ctx.save();
+
   ctx.globalAlpha = 0.25;
-  ctx.scale(-1, 1);
-  ctx.drawImage(webcam, 0, 0, -webcamScale, webcamScale / aspectRatio);
+  ctx.drawImage(webcam, 0, 0, webcamScale, webcamScale / aspectRatio);
   ctx.restore();
 }
